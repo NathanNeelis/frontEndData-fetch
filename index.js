@@ -2,24 +2,18 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 
 const endpointNPR = 'https://npropendata.rdw.nl/parkingdata/v2/';
+const proxyURL = 'NONE' // I USED THE CORS CHROME PLUGIN, PROXY URL DINDT SEEM TO WORK
+// RESOURCE: https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf
+// thanks to Victor.
 
 getMyParkingData()
 async function getMyParkingData() {
     const allParkingFacilities = await getData(endpointNPR)
-    const preparedData = await prepareData(allParkingFacilities)
+    const prDataArray = await getPrData(allParkingFacilities)
 
-    // fs.writeFileSync('./result.json', JSON.stringify(result));
 }
 
-// getData(endpointNPR)
-//     .then(nprData => {
-//         // console.log('all NPR data', nprData);
-
-
-//     })
-
-
-async function prepareData(nprData) {
+async function getPrData(nprData) {
     const nprDataSet = nprData.ParkingFacilities;
     let nprDataSetClean = removeNoName(nprDataSet);
     // console.log(nprDataSetClean);
@@ -35,10 +29,10 @@ async function prepareData(nprData) {
     const promiseAllPr = makeURLs(baseURL, prParkingIDs);
     // console.log('testing urls', promiseAllPr);
 
-    const dataWrapped = await Promise.all(promiseAllPr)
+    const wrappedData = await Promise.all(promiseAllPr)
     // console.log("dataWrapped", prDataArray)
-    const prDataArray = dataWrapped.map(item => item.parkingFacilityInformation)
-    console.log('PR parking data array complete', prDataArray)
+    const prDataArray = unwrapData(wrappedData);
+    // console.log('PR parking data array complete', prDataArray)
 
     fs.writeFileSync('./result.json', JSON.stringify(prDataArray, null, 4));
 
@@ -46,15 +40,17 @@ async function prepareData(nprData) {
 
 }
 
-// setTimeout(function () {
-//     // fetch here?
-// }, 2000)
+// RESOURCE: LAURENS - https://vizhub.com/Razpudding/781fc8abc97443919613184546720ab0?edit=files&file=index.js
+// RESOURCE: RIJK - https://dlo.mijnhva.nl/d2l/ext/rp/192600/lti/framedlaunch/a44d697c-b552-4a8c-b5e7-12fe6b8d704a
 
 async function getData(url) {
     const response = await fetch(url);
     const data = await response.json();
-    // console.log(data);
     return data;
+}
+
+function unwrapData(wrappedData) {
+    return wrappedData.map(item => item.parkingFacilityInformation)
 }
 
 function makeURLs(baseURL, IDs) {

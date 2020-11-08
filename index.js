@@ -42,6 +42,7 @@ async function getPrData(nprData) {
 
 // RESOURCE: LAURENS - https://vizhub.com/Razpudding/781fc8abc97443919613184546720ab0?edit=files&file=index.js
 // RESOURCE: RIJK - https://dlo.mijnhva.nl/d2l/ext/rp/192600/lti/framedlaunch/a44d697c-b552-4a8c-b5e7-12fe6b8d704a
+// RESOURCE: https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback
 
 async function getData(url) {
     const response = await fetch(url);

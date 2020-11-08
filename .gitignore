@@ -1,0 +1,5 @@
+node_modules
+.DS_Store
+.env
+result.json
+Park-Ride_dataset.json

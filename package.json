@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "camelcase": "^6.2.0",
+    "file-system": "^2.2.2",
+    "node-fetch": "^2.6.1"
+  }
+}
